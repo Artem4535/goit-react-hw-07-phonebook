@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import Notiflix from 'notiflix';
 import css from './PhoneBook.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { addContact } from 'redux/operations';
 import { getContacts } from 'redux/selectors';
 import { nanoid } from '@reduxjs/toolkit';
 
 export function FormHandler() {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
 
@@ -19,8 +19,8 @@ export function FormHandler() {
         setName(value);
         break;
 
-      case 'number':
-        setNumber(value);
+      case 'phone':
+        setPhone(value);
         break;
 
       default:
@@ -32,26 +32,26 @@ export function FormHandler() {
     e.preventDefault();
     const form = e.target;
     const formName = form.elements.name.value;
-    const formNumber = form.elements.number.value;
+    const formphone = form.elements.phone.value;
 
     const existingName = contacts.find(({ name }) => name === formName);
-    const existingNumber = contacts.find(({ number }) => number === formNumber);
+    const existingphone = contacts.find(({ phone }) => phone === formphone);
 
     if (existingName) {
       reset();
       return Notiflix.Notify.failure(`${formName} is already in contacts`);
-    } else if (existingNumber) {
+    } else if (existingphone) {
       reset();
-      return Notiflix.Notify.failure(`${formNumber} is already in contacts`);
+      return Notiflix.Notify.failure(`${formphone} is already in contacts`);
     }
 
-    dispatch(addContact({ name, number, id: nanoid() }));
+    dispatch(addContact({ name, phone, id: nanoid() }));
     reset();
   };
 
   const reset = () => {
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -70,10 +70,10 @@ export function FormHandler() {
         </li>
         <li className={css.item}>
           <label>
-            Number:
+            Phone:
             <input
-              value={number}
-              name="number"
+              value={phone}
+              name="phone"
               onChange={onChangeHandler}
               type="tel"
               pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
